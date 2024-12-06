@@ -1,10 +1,11 @@
 import {NextResponse} from 'next/server'
 import type {NextRequest} from 'next/server' 
 
-// auth checker
-import { authChecker } from './lib/middlewares/auth-checker'
-
 export default function middleware(request: NextRequest){
-    authChecker(request)
+    if(request.nextUrl.pathname.startsWith("/about")){
+        return NextResponse.rewrite(new URL("/dashboard",request.url))
+    }
+    if(request.nextUrl.pathname.startsWith("/login")){
+        console.log("login")
+    }
 }
-
