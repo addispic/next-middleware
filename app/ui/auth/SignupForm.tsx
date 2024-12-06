@@ -45,7 +45,9 @@ export default function SignupForm() {
       setFormErrors(validatedFields.error.flatten().fieldErrors);
     } else {
       setFormErrors({});
-      await signup({username,email,password})
+        const result = await signup({username,email,password})
+        console.log(result)
+      
     }
   };
   return (
