@@ -5,9 +5,20 @@ import Link from "next/link";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { VscEye } from "react-icons/vsc";
 import { VscEyeClosed } from "react-icons/vsc";
-// lib 
+// lib
 // schema
-import { SignupFormSchema } from "@/lib/schema/definitions";
+import { SignupFormSchema } from "@/app/lib/schema/definitions";
+
+// actions
+// auth
+import { signup } from "@/app/actions/auth";
+// interfaces
+// signup form error interface
+interface SignupFormErrorInterface {
+  username?: string[];
+  email?: string[];
+  password?: string[];
+}
 export default function SignupForm() {
   // states
   // username
@@ -16,18 +27,27 @@ export default function SignupForm() {
   const [email, setEmail] = useState("");
   // password
   const [password, setPassword] = useState("");
-//   is password hide
-const [isPasswordHide,setIsPasswordHide] = useState(true)
+  //   is password hide
+  const [isPasswordHide, setIsPasswordHide] = useState(true);
+  // errors
+  const [formErrors, setFormErrors] = useState<SignupFormErrorInterface>({});
   // focus
   const [focus, setFocus] = useState("");
 
-//   form submitting
-const formSubmitHandler = () => {
-    const validatedFields = SignupFormSchema.safeParse({username,email,password})
-    if(!validatedFields.success){
-        console.log(validatedFields.error.flatten().fieldErrors)
+  //   form submitting
+  const formSubmitHandler = async () => {
+    const validatedFields = SignupFormSchema.safeParse({
+      username,
+      email,
+      password,
+    });
+    if (!validatedFields.success) {
+      setFormErrors(validatedFields.error.flatten().fieldErrors);
+    } else {
+      setFormErrors({});
+      await signup({username,email,password})
     }
-}
+  };
   return (
     <div className="min-w-96 p-5 bg-white rounded-md shadow-lg">
       {/* header */}
@@ -68,9 +88,11 @@ const formSubmitHandler = () => {
             />
           </div>
           {/* error */}
-          {!true && (
+          {formErrors?.username?.length && (
             <div className="px-1.5 text-sm text-red-600">
-              <p>username required</p>
+              {formErrors?.username?.map((item) => {
+                return <p key={item}>{item}</p>;
+              })}
             </div>
           )}
         </div>
@@ -100,9 +122,11 @@ const formSubmitHandler = () => {
             />
           </div>
           {/* error */}
-          {!true && (
+          {formErrors?.email?.length && (
             <div className="px-1.5 text-sm text-red-600">
-              <p>email required</p>
+              {formErrors?.email?.map((item) => {
+                return <p key={item}>{item}</p>;
+              })}
             </div>
           )}
         </div>
@@ -140,9 +164,11 @@ const formSubmitHandler = () => {
             </button>
           </div>
           {/* error */}
-          {!true && (
+          {formErrors?.password?.length && (
             <div className="px-1.5 text-sm text-red-600">
-              <p>password required</p>
+              {formErrors?.password?.map((item) => {
+                return <p key={item}>{item}</p>;
+              })}
             </div>
           )}
         </div>
