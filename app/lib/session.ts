@@ -12,7 +12,7 @@ export async function encrypt(payload: any){
     return new SignJWT(payload)
         .setProtectedHeader({alg: 'HS256'})
         .setIssuedAt()
-        .setExpirationTime("60s from now")
+        .setExpirationTime("1h from now")
         .sign(encodedKey)
 }
 
@@ -43,7 +43,7 @@ export async function updateSession(request: NextRequest){
         secure: true,
         sameSite: 'lax',
         path: "/",
-        expires: new Date(Date.now() + 60 * 1000)
+        expires: new Date(Date.now() + 60 * 60 * 1000)
     })
 
     return response
