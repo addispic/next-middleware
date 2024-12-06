@@ -25,3 +25,22 @@ export async function signup({username, email, password}: {username: string; ema
         return {error: 'signup error'}
     }
 }
+
+// login
+export async function login({username,password}: {username: string; password: string}){
+    try{
+        await dbConnectionHandler()
+        const isUserExist = await UserModel.findOne({username})
+        if(!isUserExist){
+            return {usernameError: 'username not exist'}
+        }
+        if(!bcrypt.compareSync(password,isUserExist.password)){
+            return {passwordError: "incorrect password"}
+        }
+        return {message: 'success'}
+    }catch(err){
+        return {
+            error: 'login error'
+        }
+    }
+}
