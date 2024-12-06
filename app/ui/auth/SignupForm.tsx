@@ -46,8 +46,24 @@ export default function SignupForm() {
     } else {
       setFormErrors({});
         const result = await signup({username,email,password})
-        console.log(result)
-      
+        if(result?.usernameError){
+            setFormErrors(prev => {
+                return {
+                  ...prev,
+                  username: [result?.usernameError],
+                };
+            })
+        }else if(result?.emailError){
+            setFormErrors((prev) => {
+              return {
+                ...prev,
+                email: [result?.emailError],
+              };
+            });
+        }else{
+            setFormErrors({})
+            console.log("redirect here")
+        }
     }
   };
   return (
