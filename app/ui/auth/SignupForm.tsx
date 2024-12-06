@@ -5,6 +5,9 @@ import Link from "next/link";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { VscEye } from "react-icons/vsc";
 import { VscEyeClosed } from "react-icons/vsc";
+// lib 
+// schema
+import { SignupFormSchema } from "@/lib/schema/definitions";
 export default function SignupForm() {
   // states
   // username
@@ -17,6 +20,14 @@ export default function SignupForm() {
 const [isPasswordHide,setIsPasswordHide] = useState(true)
   // focus
   const [focus, setFocus] = useState("");
+
+//   form submitting
+const formSubmitHandler = () => {
+    const validatedFields = SignupFormSchema.safeParse({username,email,password})
+    if(!validatedFields.success){
+        console.log(validatedFields.error.flatten().fieldErrors)
+    }
+}
   return (
     <div className="min-w-96 p-5 bg-white rounded-md shadow-lg">
       {/* header */}
@@ -119,16 +130,13 @@ const [isPasswordHide,setIsPasswordHide] = useState(true)
                 setFocus("");
               }}
             />
-            <button className="text-xl text-neutral-600" onClick={()=>{
-                setIsPasswordHide(!isPasswordHide)
-            }}>
-                {
-                    isPasswordHide 
-                    ?
-                    <VscEyeClosed />
-                    :
-                    <VscEye />
-                }
+            <button
+              className="text-xl text-neutral-600"
+              onClick={() => {
+                setIsPasswordHide(!isPasswordHide);
+              }}
+            >
+              {isPasswordHide ? <VscEyeClosed /> : <VscEye />}
             </button>
           </div>
           {/* error */}
@@ -139,12 +147,21 @@ const [isPasswordHide,setIsPasswordHide] = useState(true)
           )}
         </div>
         {/* button */}
-        <button className="my-7 w-full flex items-center justify-center py-1.5 text-sm text-white bg-green-600 rounded-md overflow-hidden transition-colors ease-in-out duration-150 hover:bg-green-500">
-            <span>Signup</span>
+        <button
+          onClick={formSubmitHandler}
+          className="my-7 w-full flex items-center justify-center py-1.5 text-sm text-white bg-green-600 rounded-md overflow-hidden transition-colors ease-in-out duration-150 hover:bg-green-500"
+        >
+          <span>Signup</span>
         </button>
         {/* link */}
-        <p className="w-full text-centerc text-sm text-neutral-500">
-            Already have an account ? <Link className="font-medium transition-colors ease-in-out duration-150 hover:text-green-600 hover:underline" href={"/login"}>Login</Link>
+        <p className="w-full text-sm text-neutral-500">
+          Already have an account ?{" "}
+          <Link
+            className="font-medium transition-colors ease-in-out duration-150 hover:text-green-600 hover:underline"
+            href={"/login"}
+          >
+            Login
+          </Link>
         </p>
       </div>
     </div>
