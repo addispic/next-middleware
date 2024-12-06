@@ -29,7 +29,7 @@ export async function signup({username, email, password}: {username: string; ema
           secure: true,
           sameSite: "lax",
           path: "/",
-          expires: new Date(Date.now() + 60 * 60 * 1000),
+          expires: new Date(Date.now() + 60 * 1000),
         });
         return {message: 'success'}
     }catch(err){
@@ -54,7 +54,7 @@ export async function login({username,password}: {username: string; password: st
             secure: true,
             sameSite: 'lax',
             path: "/",
-            expires: new Date(Date.now() + 60 * 60 * 1000)
+            expires: new Date(Date.now() + 60 * 1000)
         })
         return {message: 'success'}
     }catch(err){
