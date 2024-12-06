@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 // icons
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { VscEye } from "react-icons/vsc";
@@ -31,6 +32,8 @@ export default function SignupForm() {
   const [isPasswordHide, setIsPasswordHide] = useState(true);
   // errors
   const [formErrors, setFormErrors] = useState<SignupFormErrorInterface>({});
+  // is form submitting
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   // focus
   const [focus, setFocus] = useState("");
 
@@ -45,25 +48,27 @@ export default function SignupForm() {
       setFormErrors(validatedFields.error.flatten().fieldErrors);
     } else {
       setFormErrors({});
-        const result = await signup({username,email,password})
-        if(result?.usernameError){
-            setFormErrors(prev => {
-                return {
-                  ...prev,
-                  username: [result?.usernameError],
-                };
-            })
-        }else if(result?.emailError){
-            setFormErrors((prev) => {
-              return {
-                ...prev,
-                email: [result?.emailError],
-              };
-            });
-        }else{
-            setFormErrors({})
-            console.log("redirect here")
-        }
+      setIsFormSubmitting(true);
+      const result = await signup({ username, email, password });
+      setIsFormSubmitting(false);
+      if (result?.usernameError) {
+        setFormErrors((prev) => {
+          return {
+            ...prev,
+            username: [result?.usernameError],
+          };
+        });
+      } else if (result?.emailError) {
+        setFormErrors((prev) => {
+          return {
+            ...prev,
+            email: [result?.emailError],
+          };
+        });
+      } else {
+        setFormErrors({});
+        redirect("/dashboard/profile");
+      }
     }
   };
   return (
@@ -151,7 +156,7 @@ export default function SignupForm() {
         {/* password */}
         <div className="mb-5">
           <div
-            className={`w-full py-1 px-1.5 border rounded-md flex items-center gap-1.5 ${
+            className={`w-full py-1.5 px-1.5 border rounded-md flex items-center gap-1.5 ${
               focus === "password" || password
                 ? "border-green-600"
                 : "border-neutral-200"
@@ -192,10 +197,11 @@ export default function SignupForm() {
         </div>
         {/* button */}
         <button
+        disabled={isFormSubmitting}
           onClick={formSubmitHandler}
           className="my-7 w-full flex items-center justify-center py-1.5 text-sm text-white bg-green-600 rounded-md overflow-hidden transition-colors ease-in-out duration-150 hover:bg-green-500"
         >
-          <span>Signup</span>
+          {isFormSubmitting ? <div className="w-[20px] aspect-square rounded-full border-2 border-white border-r-transparent animate-spin"/> : <span>Signup</span>}
         </button>
         {/* link */}
         <p className="w-full text-sm text-neutral-500">

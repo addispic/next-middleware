@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 // icons
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { VscEye } from "react-icons/vsc";
@@ -28,6 +29,8 @@ export default function LoginForm() {
   const [isPasswordHide, setIsPasswordHide] = useState(true);
   // errors
   const [formErrors, setFormErrors] = useState<SignupFormErrorInterface>({});
+  // is form submitting
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   // focus
   const [focus, setFocus] = useState("");
 
@@ -41,7 +44,9 @@ export default function LoginForm() {
       setFormErrors(validatedFields.error.flatten().fieldErrors);
     } else {
       setFormErrors({});
+      setIsFormSubmitting(true)
       const result = await login({ username, password });
+      setIsFormSubmitting(false)
       if (result?.usernameError) {
         setFormErrors((prev) => {
           return {
@@ -58,7 +63,7 @@ export default function LoginForm() {
         });
       } else {
         setFormErrors({});
-        console.log("redirect here");
+        redirect("/");
       }
     }
   };
@@ -110,11 +115,11 @@ export default function LoginForm() {
             </div>
           )}
         </div>
-        
+
         {/* password */}
         <div className="mb-5">
           <div
-            className={`w-full py-1 px-1.5 border rounded-md flex items-center gap-1.5 ${
+            className={`w-full py-1.5 px-1.5 border rounded-md flex items-center gap-1.5 ${
               focus === "password" || password
                 ? "border-green-600"
                 : "border-neutral-200"
@@ -155,10 +160,15 @@ export default function LoginForm() {
         </div>
         {/* button */}
         <button
+        disabled={isFormSubmitting}
           onClick={formSubmitHandler}
           className="my-7 w-full flex items-center justify-center py-1.5 text-sm text-white bg-green-600 rounded-md overflow-hidden transition-colors ease-in-out duration-150 hover:bg-green-500"
         >
-          <span>Login</span>
+          {isFormSubmitting ? (
+            <div className="w-[20px] aspect-square rounded-full border-2 border-white border-r-transparent animate-spin" />
+          ) : (
+            <span>Login</span>
+          )}
         </button>
         {/* link */}
         <p className="w-full text-sm text-neutral-500">
