@@ -4,6 +4,7 @@ import React from "react";
 // dashboard
 import LeftSideBar from "../ui/dashboard/LeftSideBar";
 import Header from "../ui/dashboard/Header";
+import RightSideComponent from "../ui/dashboard/RightSideComponent";
 export default function DashboardLayout({
   children,
 }: {
@@ -21,7 +22,7 @@ export default function DashboardLayout({
         <div className="flex-1">{children}</div>
       </div>
       {/* right */}
-      <div className="min-w-44 bg-green-50">right</div>
+      <RightSideComponent />
     </div>
   );
 }
